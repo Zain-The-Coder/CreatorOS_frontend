@@ -1,0 +1,124 @@
+@import '../../styles/variables.css';
+
+.register-form__container {
+  width: 100%;
+  background-color: var(--color-surface-glass);
+  backdrop-filter: blur(20px);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-warm-lg);
+  padding: var(--space-lg);
+  transition: all 0.3s ease;
+}
+
+@media (min-width: 768px) {
+  .register-form__container {
+    padding: var(--space-xl);
+  }
+}
+
+@media (min-width: 1024px) {
+  .register-form__container {
+    padding: var(--space-2xl);
+  }
+}
+
+.register-form__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-lg);
+}
+
+.register-form__early-access {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px var(--space-md);
+  border-radius: var(--radius-xl);
+  background-color: rgba(251, 191, 36, 0.2);
+  color: #765700;
+  width: fit-content;
+  font-family: var(--font-family-display);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.register-form__early-icon {
+  color: var(--color-sunset-orange);
+}
+
+.register-form__title {
+  font-family: var(--font-family-display);
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-text-main);
+  margin: var(--space-xs) 0 0 0;
+  letter-spacing: -0.015em;
+}
+
+@media (min-width: 768px) {
+  .register-form__title {
+    font-size: 32px;
+  }
+}
+
+.register-form__subtitle {
+  font-family: var(--font-family-sans);
+  font-size: 16px;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.register-form__footer {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-top: var(--space-xs);
+}
+
+.register-form__login-text {
+  font-family: var(--font-family-sans);
+  font-size: 14px;
+  color: var(--color-text-main);
+  margin: 0;
+}
+
+.register-form__login-link {
+  font-family: var(--font-family-display);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-sunset-red);
+  text-decoration: none;
+  transition: color 0.2s ease;
+  margin-left: 4px;
+}
+
+.register-form__login-link:hover {
+  color: #944a00;
+  text-decoration: underline;
+}
+
+.register-form__legal-text {
+  font-family: var(--font-family-sans);
+  font-size: 10px;
+  color: var(--color-text-muted);
+  max-width: 320px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+.register-form__legal-text a {
+  color: inherit;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.register-form__legal-text a:hover {
+  text-decoration: underline;
+}

@@ -1,0 +1,8 @@
+/* 
+  Page-specific overrides for Register if needed. 
+  Layout and core styling are handled by AuthLayout and child components.
+*/
+.page-register {
+  width: 100%;
+  min-height: 100vh;
+}

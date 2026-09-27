@@ -1,0 +1,43 @@
+:root {
+  /* Core Sunset Palette */
+  --color-sunset-red: #EF4444;
+  --color-sunset-orange: #FB923C;
+  --color-sunset-yellow: #FBBF24;
+  --color-sunset-pink: #FECACA;
+  --color-sunset-cream: #FFF7E6;
+
+  /* Surface and Text Colors */
+  --color-surface: #FFFFFF;
+  --color-surface-glass: rgba(255, 255, 255, 0.75);
+  --color-text-main: #1E1B11;
+  --color-text-muted: #5B403E;
+  
+  /* Semantic Colors */
+  --color-success: #10B981;
+  --color-success-bg: rgba(16, 185, 129, 0.1);
+  --color-error: #EF4444;
+
+  /* Spacing */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+
+  /* Border Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+
+  /* Typography (Base values for reference) */
+  --font-family-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-family-display: 'Outfit', system-ui, sans-serif;
+
+  /* Shadows (Tinted with warm sunset colors) */
+  --shadow-warm-sm: 0 4px 16px rgba(251, 146, 60, 0.12);
+  --shadow-warm-md: 0 10px 25px -4px rgba(239, 68, 68, 0.45);
+  --shadow-warm-lg: 0 20px 45px -10px rgba(251, 146, 60, 0.18), 0 4px 16px -4px rgba(239, 68, 68, 0.08);
+  --shadow-focus: 0 0 0 4px rgba(251, 146, 60, 0.25);
+}

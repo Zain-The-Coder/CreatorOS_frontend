@@ -1,0 +1,40 @@
+@import '../../styles/variables.css';
+
+.primary-button {
+  width: 100%;
+  padding: 14px var(--space-lg);
+  margin-top: var(--space-md);
+  border-radius: var(--radius-md);
+  background-color: var(--color-sunset-red);
+  color: var(--color-surface);
+  border: none;
+  font-family: var(--font-family-display);
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  cursor: pointer;
+  box-shadow: var(--shadow-warm-md);
+  transition: all 0.3s ease;
+}
+
+.primary-button:hover {
+  background-color: #E02424;
+  box-shadow: 0 12px 28px -2px rgba(251, 146, 60, 0.55);
+  transform: translateY(-2px);
+}
+
+.primary-button:active {
+  transform: translateY(0);
+}
+
+.primary-button__icon {
+  font-size: 20px;
+  transition: transform 0.3s ease;
+}
+
+.primary-button:hover .primary-button__icon {
+  transform: translateX(4px);
+}

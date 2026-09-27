@@ -1,0 +1,80 @@
+@import '../../styles/variables.css';
+
+.quick-return-chip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  padding: var(--space-sm);
+  background-color: rgba(255, 255, 255, 0.6);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-md);
+  border: 1px solid rgba(251, 146, 60, 0.15);
+}
+
+.quick-return-chip__info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  min-width: 0;
+}
+
+.quick-return-chip__avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--color-sunset-orange);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-family-display);
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.quick-return-chip__text-col {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.quick-return-chip__email {
+  font-family: var(--font-family-sans);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.quick-return-chip__subtitle {
+  font-family: var(--font-family-sans);
+  font-size: 10px;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.quick-return-chip__button {
+  padding: 6px 12px;
+  border-radius: var(--radius-xl);
+  background-color: white;
+  color: var(--color-sunset-red);
+  font-family: var(--font-family-sans);
+  font-size: 12px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.quick-return-chip__button:hover {
+  background-color: var(--color-sunset-red);
+  color: white;
+}

@@ -1,0 +1,5 @@
+/* Page specific layout if needed. Most is handled by AuthLayout. */
+.page-login {
+  width: 100%;
+  min-height: 100vh;
+}

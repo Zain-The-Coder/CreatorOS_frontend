@@ -1,0 +1,201 @@
+.stat-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+  background: linear-gradient(135deg, var(--color-surface), var(--color-sunset-cream));
+  box-shadow: var(--shadow-warm-lg);
+  backdrop-filter: blur(12px);
+  transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-lg);
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+}
+
+.stat-card__bg-glow {
+  position: absolute;
+  top: -48px;
+  right: -48px;
+  width: 192px;
+  height: 192px;
+  border-radius: 50%;
+  filter: blur(48px);
+  pointer-events: none;
+  opacity: 0.15;
+}
+
+.stat-card--primary .stat-card__bg-glow {
+  background-color: var(--color-sunset-red);
+}
+
+.stat-card--secondary .stat-card__bg-glow {
+  background-color: var(--color-sunset-orange);
+}
+
+.stat-card__content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  height: 100%;
+}
+
+.stat-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stat-card__title-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.stat-card__icon-wrapper {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+}
+
+.stat-card--primary .stat-card__icon-wrapper {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: var(--color-sunset-red);
+  box-shadow: 0 2px 10px rgba(239, 68, 68, 0.2);
+}
+
+.stat-card--secondary .stat-card__icon-wrapper {
+  background-color: var(--color-sunset-orange);
+  color: var(--color-surface);
+  box-shadow: 0 2px 10px rgba(251, 146, 60, 0.2);
+}
+
+.stat-card__label-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-card__label {
+  font-family: var(--font-family-sans);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-sunset-orange);
+}
+
+.stat-card--primary .stat-card__label {
+  color: var(--color-sunset-red);
+}
+
+.stat-card__title {
+  font-family: var(--font-family-display);
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-text-main);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.stat-card__trend {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-family: var(--font-family-sans);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.stat-card--positive .stat-card__trend {
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+}
+.stat-card--negative .stat-card__trend {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: var(--color-error);
+}
+.stat-card--primary .stat-card__trend {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: var(--color-sunset-red);
+}
+
+.stat-card__trend-icon {
+  font-size: 16px;
+}
+
+.stat-card__body {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-md);
+  margin-top: var(--space-xs);
+}
+
+.stat-card__value {
+  font-family: var(--font-family-display);
+  font-size: 56px;
+  font-weight: 700;
+  color: var(--color-text-main);
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.stat-card__subtext {
+  font-family: var(--font-family-sans);
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.stat-card__visual {
+  width: 100%;
+  padding-top: var(--space-sm);
+  height: 56px;
+}
+
+/* Visualization styles */
+.stat-card__sparkline {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.stat-card__bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 100%;
+}
+
+.stat-card__bar {
+  flex: 1;
+  border-radius: 4px 4px 0 0;
+  background-color: rgba(251, 146, 60, 0.6);
+  transition: background-color 0.2s ease;
+}
+
+.stat-card__bar:hover {
+  background-color: var(--color-sunset-orange);
+}
+
+.stat-card__bar--active {
+  background-color: var(--color-sunset-orange);
+  box-shadow: 0 2px 8px rgba(251, 146, 60, 0.3);
+}
+
+@media (max-width: 1024px) {
+  .stat-card__value {
+    font-size: 40px;
+  }
+}

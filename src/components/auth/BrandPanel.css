@@ -1,11 +1,29 @@
 @import '../../styles/variables.css';
 
 .brand-panel {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: var(--space-xl);
-  height: 100%;
+  display: contents;
+}
+
+@media (min-width: 1024px) {
+  .brand-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--space-xl);
+    height: 100%;
+  }
+}
+
+@media (max-width: 1023px) {
+  .brand-panel__content {
+    order: 1;
+  }
+  
+  .brand-panel__visual,
+  .brand-panel__footer {
+    order: 3;
+    margin-top: var(--space-lg);
+  }
 }
 
 .brand-panel__content {

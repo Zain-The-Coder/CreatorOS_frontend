@@ -131,3 +131,78 @@
     padding: 0;
   }
 }
+
+.sidebar-mobile-header {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .sidebar-mobile-header {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    background-color: var(--color-surface-glass);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(251, 146, 60, 0.2);
+    z-index: 100;
+    padding: 0 var(--space-sm);
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+
+  .sidebar-mobile-header__logo {
+    display: flex;
+    padding: 0;
+  }
+
+  .sidebar-mobile-header__right {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+
+  /* Make user snippet smaller for header */
+  .sidebar-mobile-header .user-snippet {
+    padding: 4px 8px;
+    gap: 6px;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+  }
+
+  .sidebar-mobile-header .user-snippet__avatar {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .sidebar-mobile-header .user-snippet__name {
+    font-size: 12px;
+  }
+
+  .sidebar-mobile-header .user-snippet__handle {
+    font-size: 10px;
+    max-width: 80px;
+  }
+
+  .sidebar-mobile-header__logout {
+    background: none;
+    border: none;
+    color: var(--color-sunset-red);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    border-radius: 50%;
+    background-color: rgba(239, 68, 68, 0.1);
+    cursor: pointer;
+  }
+
+  /* Hide the logout button in the bottom nav since it's now in the header */
+  .sidebar__nav .sidebar-nav-item:last-child {
+    display: none;
+  }
+}

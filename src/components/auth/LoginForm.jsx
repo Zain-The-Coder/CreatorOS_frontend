@@ -26,9 +26,8 @@ export default function LoginForm({ onSubmit, error }) {
 
   const handleAutofill = () => {
     setFormData({
-      email: 'mkbhd@studio.com',
-      password: 'supercreator2025',
-      rememberDevice: true
+      email: 'creatoros@gmail.com',
+      password: 'creatoros',
     });
   };
 

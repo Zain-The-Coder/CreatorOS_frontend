@@ -59,6 +59,13 @@
   box-sizing: border-box;
 }
 
+@media (max-width: 600px) {
+  .input-field__input {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+}
+
 .input-field__input:focus {
   background-color: var(--color-surface);
 }

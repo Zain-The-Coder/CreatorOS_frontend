@@ -182,6 +182,8 @@
     align-items: stretch;
     padding: var(--space-sm);
     gap: var(--space-xs);
+    height: 100%;
+    box-sizing: border-box;
   }
   
   .video-card__main {
@@ -202,6 +204,8 @@
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   
   .video-card__stats {

@@ -6,11 +6,11 @@
   backdrop-filter: blur(20px);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-warm-lg);
-  padding: var(--space-lg);
+  padding: 24px 16px;
   transition: all 0.3s ease;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 640px) {
   .register-form__container {
     padding: var(--space-xl);
   }

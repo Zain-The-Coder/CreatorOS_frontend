@@ -51,7 +51,7 @@
   width: 100%;
   max-width: 1440px;
   margin: 0 auto;
-  padding: 0 var(--space-md);
+  padding: 0 var(--space-sm);
 }
 
 @media (min-width: 768px) {
@@ -119,14 +119,12 @@
 }
 
 .auth-layout__brand-column {
-  display: flex;
-  flex-direction: column;
-  order: 2;
+  display: contents;
 }
 
 .auth-layout__form-column {
   width: 100%;
-  order: 1;
+  order: 2;
 }
 
 @media (min-width: 1024px) {
@@ -136,6 +134,8 @@
   }
   
   .auth-layout__brand-column {
+    display: flex;
+    flex-direction: column;
     order: 1;
   }
   

@@ -10,33 +10,61 @@ import { getMyVideos } from '../api/youtube.api';
 import { formatNumber } from '../utils/formatNumber';
 import { formatDuration } from '../utils/formatDuration';
 
-const renderSparkline = () => (
-  <div className="stat-card__sparkline" style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
-    <svg width="100%" height="100%" viewBox="0 0 360 50" preserveAspectRatio="none">
-      <defs>
-        <linearGradient id="sparkGrad" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0%" stopColor="rgba(239, 68, 68, 0.4)" />
-          <stop offset="100%" stopColor="rgba(239, 68, 68, 0)" />
-        </linearGradient>
-      </defs>
-      <path d="M0,45 C25,42 40,25 70,30 C100,35 120,18 150,22 C180,26 210,12 240,16 C270,20 290,4 320,8 C340,10 350,3 360,2 L360,50 L0,50 Z" fill="url(#sparkGrad)" />
-      <path d="M0,45 C25,42 40,25 70,30 C100,35 120,18 150,22 C180,26 210,12 240,16 C270,20 290,4 320,8 C340,10 350,3 360,2" fill="none" stroke="var(--color-sunset-red)" strokeWidth="3" strokeLinecap="round" />
-      <circle cx="360" cy="2" r="5" fill="#fff" stroke="var(--color-sunset-red)" strokeWidth="2" />
-    </svg>
-  </div>
-);
+const renderSparkline = (value = 100) => {
+  // Generate a smooth upward trending path if value > 0
+  const points = [];
+  const segments = 10;
+  let currentY = 45; // Start near bottom (50 is max height)
+  for (let i = 0; i <= segments; i++) {
+    const x = (i / segments) * 360;
+    points.push(`${i === 0 ? 'M' : 'L'}${x},${currentY}`);
+    // Random step, trending upwards (smaller Y)
+    currentY = Math.max(5, currentY - (Math.random() * 8)); 
+  }
+  const pathStr = points.join(' ');
+  const areaStr = `${pathStr} L360,50 L0,50 Z`;
 
-const renderBars = () => (
-  <div className="stat-card__bars">
-    {[30, 42, 38, 55, 48, 65, 72, 60, 80, 76, 92, 100, 84, 88].map((h, i) => (
-      <div 
-        key={i} 
-        className={`stat-card__bar ${h === 100 ? 'stat-card__bar--active' : ''}`} 
-        style={{ height: `${h}%` }}
-      ></div>
-    ))}
-  </div>
-);
+  return (
+    <div className="stat-card__sparkline" style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
+      <svg width="100%" height="100%" viewBox="0 0 360 50" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="sparkGrad" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stopColor="rgba(239, 68, 68, 0.4)" />
+            <stop offset="100%" stopColor="rgba(239, 68, 68, 0)" />
+          </linearGradient>
+        </defs>
+        <path d={areaStr} fill="url(#sparkGrad)" />
+        <path d={pathStr} fill="none" stroke="var(--color-sunset-red)" strokeWidth="3" strokeLinecap="round" />
+        <circle cx="360" cy={currentY} r="5" fill="#fff" stroke="var(--color-sunset-red)" strokeWidth="2" />
+      </svg>
+    </div>
+  );
+};
+
+const renderBars = (value = 100) => {
+  // Generate 14 bars trending upwards
+  const bars = [];
+  let currentH = 30; // Start at 30% height
+  for (let i = 0; i < 14; i++) {
+    bars.push(currentH);
+    currentH = Math.min(100, currentH + (Math.random() * 15 - 3)); // Trend upwards
+  }
+  
+  // Make sure the last one looks like the current value/highest
+  bars[13] = 100;
+
+  return (
+    <div className="stat-card__bars">
+      {bars.map((h, i) => (
+        <div 
+          key={i} 
+          className={`stat-card__bar ${i === 13 ? 'stat-card__bar--active' : ''}`} 
+          style={{ height: `${h}%` }}
+        ></div>
+      ))}
+    </div>
+  );
+};
 
 const formatDate = (isoStr) => {
   if (!isoStr) return '';
@@ -212,9 +240,9 @@ const Dashboard = () => {
                   title="Total Views"
                   value={displayViews}
                   subtext="Total channel views"
-                  trendText="Synced"
+                  trendText={stats.views > 0 ? "Trending Up" : "Synced"}
                   trendPositive={true}
-                  renderVisual={renderSparkline}
+                  renderVisual={() => renderSparkline(stats.views)}
                 />
                 <StatCard 
                   variant="secondary"
@@ -223,9 +251,9 @@ const Dashboard = () => {
                   title="Watch Time Hours"
                   value={displayWatchTime}
                   subtext="Total watch hours"
-                  trendText="Synced"
+                  trendText={stats.watchTime > 0 ? "Trending Up" : "Synced"}
                   trendPositive={true}
-                  renderVisual={renderBars}
+                  renderVisual={() => renderBars(stats.watchTime)}
                 />
               </div>
 

@@ -31,7 +31,6 @@ export default function Login() {
   return (
     <div className="page-login">
       <AuthLayout 
-        badgeText="⚡ STUDIO WORKSPACE v2.4 ONLINE"
         brandPanel={<LoginBrandPanel />}
         bottomContent={<TelemetryTiles />}
       >

@@ -76,13 +76,26 @@ const Dashboard = () => {
   const { user } = useAuth();
   const [videoData, setVideoData] = useState([]);
   const [stats, setStats] = useState({ views: 0, watchTime: 0 });
-  const [status, setStatus] = useState('loading'); // 'loading', 'success', 'not_connected', 'error'
+  const [status, setStatus] = useState('loading');
   const [errorMessage, setErrorMessage] = useState('');
+  
+  const [currentPage, setCurrentPage] = useState(1);
+  const [paginationInfo, setPaginationInfo] = useState({
+    hasNextPage: false,
+    hasPrevPage: false,
+    totalPages: 1
+  });
+  const [isPaginating, setIsPaginating] = useState(false);
 
-  const fetchDashboardData = async () => {
-    setStatus('loading');
+  const fetchDashboardData = async (page = 1, isInitialLoad = true) => {
+    if (isInitialLoad) {
+      setStatus('loading');
+    } else {
+      setIsPaginating(true);
+    }
+
     try {
-      const response = await getMyVideos();
+      const response = await getMyVideos(page, 30);
       const payload = response.data;
       
       const hasDataObj = payload.data && payload.data.videoDetails;
@@ -91,6 +104,15 @@ const Dashboard = () => {
       if (payload.status === 200 && (hasDataObj || hasVideosObj)) {
         const targetObj = hasDataObj ? payload.data : payload.videos;
         const vids = targetObj.videoDetails || [];
+        
+        // Use backend pagination object if provided, else fallback to standard defaults
+        const pageData = payload.pagination || targetObj.pagination || {
+          currentPage: page,
+          totalPages: 1,
+          hasNextPage: false,
+          hasPrevPage: page > 1
+        };
+
         const mappedVideos = vids.map(v => ({
           id: v.videoId,
           title: v.title,
@@ -99,11 +121,21 @@ const Dashboard = () => {
           date: formatDate(v.publishedAt),
           views: formatNumber(v.views),
           likes: formatNumber(v.likes),
+          rawViews: Number(String(v.views || '0').replace(/[^0-9.-]+/g, '')) || 0,
+          rawLikes: Number(String(v.likes || '0').replace(/[^0-9.-]+/g, '')) || 0,
+          rawWatchTime: Number(String(v.watchTime || v.estimatedMinutesWatched || '0').replace(/[^0-9.-]+/g, '')) || 0,
           badge: v.privacyStatus === 'public' ? 'Published' : (v.privacyStatus === 'unlisted' ? 'Unlisted' : 'Private'),
           badgeType: v.privacyStatus === 'public' ? 'primary' : 'tertiary',
         }));
         
+        // Always replace videos list when paginating (don't append)
         setVideoData(mappedVideos);
+        setCurrentPage(pageData.currentPage || page);
+        setPaginationInfo({
+          hasNextPage: pageData.hasNextPage,
+          hasPrevPage: pageData.hasPrevPage,
+          totalPages: pageData.totalPages
+        });
 
         // Sum views from videos for fallback
         let totalViews = vids.reduce((acc, curr) => acc + (Number(curr.views) || 0), 0);
@@ -121,28 +153,36 @@ const Dashboard = () => {
           }
         }
         
-        setStats({
-          watchTime: watchTimeMinutes,
-          views: totalViews
-        });
-        setStatus('success');
+        if (isInitialLoad) {
+          setStats({
+            watchTime: watchTimeMinutes,
+            views: totalViews
+          });
+          setStatus('success');
+        }
       } else {
-        setStatus('error');
+        if (isInitialLoad) setStatus('error');
         setErrorMessage('Failed to load data');
       }
     } catch (error) {
       if (error.response && error.response.status === 400 && error.response.data?.message?.toLowerCase().includes('connected')) {
-        setStatus('not_connected');
+        if (isInitialLoad) setStatus('not_connected');
       } else {
-        setStatus('error');
+        if (isInitialLoad) setStatus('error');
         setErrorMessage(error.response?.data?.message || error.message || 'Network error');
       }
+    } finally {
+      setIsPaginating(false);
     }
   };
 
   useEffect(() => {
-    fetchDashboardData();
+    fetchDashboardData(1, true);
   }, []);
+
+  const handlePageChange = (newPage) => {
+    fetchDashboardData(newPage, false);
+  };
 
   const displayName = user?.youtube?.channelTitle || user?.username || "Creator";
   const displayViews = formatNumber(stats.views);
@@ -257,7 +297,13 @@ const Dashboard = () => {
                 />
               </div>
 
-              <VideoList videos={videoData} />
+              <VideoList 
+                videos={videoData}
+                currentPage={currentPage}
+                paginationInfo={paginationInfo}
+                isPaginating={isPaginating}
+                onPageChange={handlePageChange}
+              />
             </>
           )}
 

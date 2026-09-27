@@ -31,8 +31,6 @@ const DashboardHeader = ({ name, date }) => {
         </h1>
         <p className="dashboard-header__date">
           <span>{date}</span>
-          <span className="dashboard-header__dot"></span>
-          <span>Studio Workspace v2.4</span>
         </p>
       </div>
 

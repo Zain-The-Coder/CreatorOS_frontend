@@ -1,26 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import './Dashboard.css';
+import './DashboardSkeleton.css';
 import Sidebar from '../components/dashboard/Sidebar';
 import DashboardHeader from '../components/dashboard/DashboardHeader';
 import StatCard from '../components/dashboard/StatCard';
 import VideoList from '../components/dashboard/VideoList';
 import useAuth from '../hooks/useAuth';
-import axiosInstance from '../api/axiosInstance';
-
-const DUMMY_VIDEOS = [
-  // ... (keep 1 dummy video for fallback)
-  {
-    title: "Connect YouTube to see your videos here",
-    thumbnail: "https://lh3.googleusercontent.com/aida-public/AB6AXuBYBK_gsPXkHBflZdJnn-zgWNonPIhJ6Og2uGUO42h-p4dF7ZK52N49r7c0cK-lMB1LC6ZR7lzQyQ8As039n_ZFBZou9GNaD0z8qIdyn1O4KVVHuYhYB5i9-9LJinEKCf_0tS25ejJFTXWsEK1jb7LN13Oekw3JresFMPkdkK4JS8oEhosQhKJhs4J3cVSZFpL-c1Q807NSTyUaQsWgPt7mM2sMA9SFUEUIQ8_F2KQy1IJzzb91--J8",
-    duration: "0:00",
-    date: "Today",
-    badge: "Placeholder",
-    badgeType: "tertiary",
-    views: "0",
-    likes: "0",
-    retention: "0%"
-  }
-];
+import { getMyVideos } from '../api/youtube.api';
+import { formatNumber } from '../utils/formatNumber';
+import { formatDuration } from '../utils/formatDuration';
 
 const renderSparkline = () => (
   <div className="stat-card__sparkline" style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
@@ -50,81 +38,92 @@ const renderBars = () => (
   </div>
 );
 
-const formatDuration = (pt) => {
-  if (!pt) return '0:00';
-  const match = pt.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
-  if (!match) return '0:00';
-  const h = (match[1] || '').replace('H', '');
-  const m = (match[2] || '').replace('M', '');
-  const s = (match[3] || '').replace('S', '');
-  const min = h ? parseInt(h) * 60 + parseInt(m || '0') : parseInt(m || '0');
-  const sec = parseInt(s || '0').toString().padStart(2, '0');
-  return `${min}:${sec}`;
-};
-
 const formatDate = (isoStr) => {
+  if (!isoStr) return '';
   const date = new Date(isoStr);
   return date.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
-};
-
-const formatNumber = (num) => {
-  if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
-  if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
-  return num.toString();
 };
 
 const Dashboard = () => {
   const { user } = useAuth();
   const [videoData, setVideoData] = useState([]);
   const [stats, setStats] = useState({ views: 0, watchTime: 0 });
-  const [isLoading, setIsLoading] = useState(false);
+  const [status, setStatus] = useState('loading'); // 'loading', 'success', 'not_connected', 'error'
+  const [errorMessage, setErrorMessage] = useState('');
 
-  useEffect(() => {
-    const fetchDashboardData = async () => {
-      if (!user?.profileCompleted) return;
+  const fetchDashboardData = async () => {
+    setStatus('loading');
+    try {
+      const response = await getMyVideos();
+      const payload = response.data;
       
-      setIsLoading(true);
-      try {
-        const response = await axiosInstance.get('/api/dashboard/getmyvideos');
-        if (response.data && response.data.videos) {
-          const vids = response.data.videos.videoDetails || [];
-          const mappedVideos = vids.map(v => ({
-            id: v.videoId,
-            title: v.title,
-            thumbnail: v.thumbnails?.url,
-            duration: formatDuration(v.duration),
-            date: formatDate(v.publishedAt),
-            views: formatNumber(v.views || 0),
-            likes: formatNumber(v.likes || 0),
-            badge: v.privacyStatus === 'public' ? 'Published' : 'Private',
-            badgeType: v.privacyStatus === 'public' ? 'primary' : 'tertiary',
-          }));
-          
-          setVideoData(mappedVideos);
+      const hasDataObj = payload.data && payload.data.videoDetails;
+      const hasVideosObj = payload.videos && payload.videos.videoDetails;
 
-          if (response.data.videos.analytics?.rows?.[0]) {
-            const row = response.data.videos.analytics.rows[0];
-            setStats({
-              watchTime: row[0] || 0, // estimatedMinutesWatched
-              views: row[2] || 0      // views
-            });
+      if (payload.status === 200 && (hasDataObj || hasVideosObj)) {
+        const targetObj = hasDataObj ? payload.data : payload.videos;
+        const vids = targetObj.videoDetails || [];
+        const mappedVideos = vids.map(v => ({
+          id: v.videoId,
+          title: v.title,
+          thumbnail: v.thumbnails?.medium?.url || v.thumbnails?.default?.url || v.thumbnails?.url || '',
+          duration: formatDuration(v.duration),
+          date: formatDate(v.publishedAt),
+          views: formatNumber(v.views),
+          likes: formatNumber(v.likes),
+          badge: v.privacyStatus === 'public' ? 'Published' : (v.privacyStatus === 'unlisted' ? 'Unlisted' : 'Private'),
+          badgeType: v.privacyStatus === 'public' ? 'primary' : 'tertiary',
+        }));
+        
+        setVideoData(mappedVideos);
+
+        // Sum views from videos for fallback
+        let totalViews = vids.reduce((acc, curr) => acc + (Number(curr.views) || 0), 0);
+        let watchTimeMinutes = 0;
+
+        if (targetObj.analytics && targetObj.analytics.rows && targetObj.analytics.columnHeaders) {
+          const headers = targetObj.analytics.columnHeaders;
+          const wtIndex = headers.findIndex(h => h.name === 'estimatedMinutesWatched');
+          const viewsIndex = headers.findIndex(h => h.name === 'views');
+          const row = targetObj.analytics.rows[0];
+
+          if (row) {
+            if (wtIndex !== -1) watchTimeMinutes = row[wtIndex] || 0;
+            if (viewsIndex !== -1 && row[viewsIndex]) totalViews = row[viewsIndex];
           }
         }
-      } catch (error) {
-        console.error('Error fetching dashboard data:', error);
-      } finally {
-        setIsLoading(false);
+        
+        setStats({
+          watchTime: watchTimeMinutes,
+          views: totalViews
+        });
+        setStatus('success');
+      } else {
+        setStatus('error');
+        setErrorMessage('Failed to load data');
       }
-    };
+    } catch (error) {
+      if (error.response && error.response.status === 400 && error.response.data?.message?.toLowerCase().includes('connected')) {
+        setStatus('not_connected');
+      } else {
+        setStatus('error');
+        setErrorMessage(error.response?.data?.message || error.message || 'Network error');
+      }
+    }
+  };
 
+  useEffect(() => {
     fetchDashboardData();
-  }, [user]);
+  }, []);
 
   const displayName = user?.youtube?.channelTitle || user?.username || "Creator";
-  const displayViews = user?.profileCompleted ? formatNumber(stats.views) : '0';
-  const displayWatchTime = user?.profileCompleted ? formatNumber(Math.floor(stats.watchTime / 60)) + ' hrs' : '0 hrs';
-  
+  const displayViews = formatNumber(stats.views);
+  const displayWatchTime = formatNumber(Math.floor(stats.watchTime / 60)) + ' hrs';
   const todayDate = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+
+  const handleConnect = () => {
+    window.location.href = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'}/auth/google/connect-youtube`;
+  };
 
   return (
     <div className="dashboard-layout">
@@ -136,36 +135,104 @@ const Dashboard = () => {
             date={todayDate} 
           />
           
-          <div className="dashboard-stats-grid">
-            <StatCard 
-              variant="primary"
-              icon="visibility"
-              label="Broadcast Reach"
-              title="Total Views"
-              value={displayViews}
-              subtext={user?.profileCompleted ? "Total channel views" : "Connect YouTube to see stats"}
-              trendText={user?.profileCompleted ? "Synced" : "Pending"}
-              trendPositive={user?.profileCompleted}
-              renderVisual={renderSparkline}
-            />
-            <StatCard 
-              variant="secondary"
-              icon="schedule"
-              label="Retention Density"
-              title="Watch Time Hours"
-              value={displayWatchTime}
-              subtext={user?.profileCompleted ? "Total watch hours" : "Connect YouTube to see stats"}
-              trendText={user?.profileCompleted ? "Synced" : "Pending"}
-              trendPositive={user?.profileCompleted}
-              renderVisual={renderBars}
-            />
-          </div>
-
-          {isLoading ? (
-            <div style={{ padding: '2rem', textAlign: 'center' }}>Loading your content...</div>
-          ) : (
-            <VideoList videos={user?.profileCompleted && videoData.length > 0 ? videoData : DUMMY_VIDEOS} />
+          {status === 'loading' && (
+            <>
+              <div className="dashboard-stats-grid">
+                <div className="stat-card-skeleton skeleton-pulse">
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <div className="skeleton-circle"></div>
+                    <div className="skeleton-text" style={{ width: '60px' }}></div>
+                  </div>
+                  <div className="skeleton-text" style={{ width: '80%', height: '32px', marginTop: 'auto' }}></div>
+                </div>
+                <div className="stat-card-skeleton skeleton-pulse">
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <div className="skeleton-circle"></div>
+                    <div className="skeleton-text" style={{ width: '60px' }}></div>
+                  </div>
+                  <div className="skeleton-text" style={{ width: '80%', height: '32px', marginTop: 'auto' }}></div>
+                </div>
+              </div>
+              <div className="dashboard-videos-loading-grid">
+                <div className="video-card-skeleton skeleton-pulse">
+                  <div className="skeleton-thumb"></div>
+                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <div className="skeleton-text" style={{ width: '40%' }}></div>
+                    <div className="skeleton-text" style={{ width: '80%' }}></div>
+                    <div className="skeleton-text" style={{ width: '30%', marginTop: 'auto' }}></div>
+                  </div>
+                </div>
+                <div className="video-card-skeleton skeleton-pulse">
+                  <div className="skeleton-thumb"></div>
+                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <div className="skeleton-text" style={{ width: '40%' }}></div>
+                    <div className="skeleton-text" style={{ width: '80%' }}></div>
+                    <div className="skeleton-text" style={{ width: '30%', marginTop: 'auto' }}></div>
+                  </div>
+                </div>
+              </div>
+            </>
           )}
+
+          {status === 'not_connected' && (
+            <div style={{ padding: '3rem', textAlign: 'center', backgroundColor: 'var(--color-surface-glass)', borderRadius: 'var(--radius-xl)', border: '1px solid var(--color-border)', marginTop: '2rem' }}>
+              <span className="material-symbols-outlined" style={{ fontSize: '48px', color: 'var(--color-sunset-red)', marginBottom: '1rem' }}>link_off</span>
+              <h2 style={{ fontFamily: 'var(--font-family-display)', fontSize: '24px', marginBottom: '1rem' }}>YouTube Not Connected</h2>
+              <p style={{ color: 'var(--color-text-muted)', marginBottom: '2rem' }}>Connect your YouTube channel to see your analytics and manage your videos directly from CreatorOS.</p>
+              <button 
+                onClick={handleConnect}
+                style={{ background: 'var(--color-sunset-red)', color: '#fff', padding: '12px 24px', borderRadius: '99px', border: 'none', fontWeight: 600, cursor: 'pointer', fontSize: '16px' }}
+              >
+                Connect YouTube
+              </button>
+            </div>
+          )}
+
+          {status === 'error' && (
+            <div style={{ padding: '3rem', textAlign: 'center', backgroundColor: 'var(--color-surface-glass)', borderRadius: 'var(--radius-xl)', border: '1px solid var(--color-border)', marginTop: '2rem' }}>
+              <span className="material-symbols-outlined" style={{ fontSize: '48px', color: 'var(--color-text-muted)', marginBottom: '1rem' }}>error</span>
+              <h2 style={{ fontFamily: 'var(--font-family-display)', fontSize: '24px', marginBottom: '1rem' }}>Something went wrong</h2>
+              <p style={{ color: 'var(--color-text-muted)', marginBottom: '2rem' }}>{errorMessage}</p>
+              <button 
+                onClick={fetchDashboardData}
+                style={{ background: 'var(--color-surface)', color: 'var(--color-text-main)', padding: '10px 24px', borderRadius: '99px', border: '1px solid var(--color-border)', fontWeight: 600, cursor: 'pointer' }}
+              >
+                Try Again
+              </button>
+            </div>
+          )}
+
+          {status === 'success' && (
+            <>
+              <div className="dashboard-stats-grid">
+                <StatCard 
+                  variant="primary"
+                  icon="visibility"
+                  label="Broadcast Reach"
+                  title="Total Views"
+                  value={displayViews}
+                  subtext="Total channel views"
+                  trendText="Synced"
+                  trendPositive={true}
+                  renderVisual={renderSparkline}
+                />
+                <StatCard 
+                  variant="secondary"
+                  icon="schedule"
+                  label="Retention Density"
+                  title="Watch Time Hours"
+                  value={displayWatchTime}
+                  subtext="Total watch hours"
+                  trendText="Synced"
+                  trendPositive={true}
+                  renderVisual={renderBars}
+                />
+              </div>
+
+              <VideoList videos={videoData} />
+            </>
+          )}
+
         </div>
       </main>
     </div>

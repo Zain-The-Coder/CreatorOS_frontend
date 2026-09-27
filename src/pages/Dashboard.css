@@ -21,19 +21,23 @@
 
 .dashboard-stats-grid {
   display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  gap: var(--space-lg);
-}
-
-@media (min-width: 1024px) {
-  .dashboard-stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-md);
 }
 
 @media (max-width: 768px) {
   .dashboard-main {
     margin-left: 0;
     padding-top: 100px;
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboard-layout {
+    padding-bottom: 64px;
+  }
+  .dashboard-main {
+    padding-left: var(--space-sm);
+    padding-right: var(--space-sm);
   }
 }

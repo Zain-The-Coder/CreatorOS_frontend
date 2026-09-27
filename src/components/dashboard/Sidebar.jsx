@@ -42,9 +42,9 @@ const Sidebar = () => {
 
       <div className="sidebar__bottom">
         <UserProfileSnippet 
-          name={user?.username || "Alex Rivera"} 
-          handle={user?.email || "@alexrivera"} 
-          role="PRO" 
+          name={user?.youtube?.channelTitle || user?.username || "Creator"} 
+          handle={user?.email || "No Email"} 
+          role={user?.role?.[0]?.toUpperCase() || "USER"} 
         />
       </div>
     </aside>

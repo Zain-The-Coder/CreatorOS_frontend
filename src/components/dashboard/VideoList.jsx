@@ -5,7 +5,15 @@ import VideoCard from './VideoCard';
 const VideoList = ({ videos }) => {
   const [activeTab, setActiveTab] = useState('All Videos');
   
-  const tabs = ['All Videos', 'Published', 'Scheduled', 'Live Streams'];
+  const tabs = ['All Videos', 'Published', 'Private', 'Live Streams'];
+
+  const filteredVideos = videos.filter(video => {
+    if (activeTab === 'All Videos') return true;
+    if (activeTab === 'Published') return video.badge === 'Published';
+    if (activeTab === 'Private') return video.badge === 'Private';
+    if (activeTab === 'Live Streams') return false; // Not implemented from backend yet
+    return true;
+  });
 
   return (
     <section className="video-list">
@@ -26,9 +34,15 @@ const VideoList = ({ videos }) => {
         </div>
       </div>
       <div className="video-list__content">
-        {videos.map((video, index) => (
-          <VideoCard key={index} {...video} />
-        ))}
+        {filteredVideos.length > 0 ? (
+          filteredVideos.map((video, index) => (
+            <VideoCard key={video.id || index} {...video} />
+          ))
+        ) : (
+          <div style={{ padding: '2rem', textAlign: 'center', width: '100%', color: 'var(--color-text-muted)' }}>
+            No videos found for this filter.
+          </div>
+        )}
       </div>
     </section>
   );

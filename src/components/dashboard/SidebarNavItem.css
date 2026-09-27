@@ -32,3 +32,25 @@
 .nav-item__icon {
   font-size: 20px;
 }
+
+@media (max-width: 600px) {
+  .nav-item {
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px 12px;
+    border-radius: var(--radius-md);
+    font-size: 10px;
+    height: 100%;
+    justify-content: center;
+  }
+  
+  .nav-item--active {
+    background-color: transparent;
+    color: var(--color-sunset-red);
+    box-shadow: none;
+  }
+  
+  .nav-item--active .nav-item__icon {
+    font-variation-settings: 'FILL' 1;
+  }
+}

@@ -21,7 +21,7 @@ function App() {
           } 
         />
         <Route 
-          path="/dashboard/video/:id" 
+          path="/dashboard/video/:videoId" 
           element={
             <ProtectedRoute>
               <VideoAnalytics />

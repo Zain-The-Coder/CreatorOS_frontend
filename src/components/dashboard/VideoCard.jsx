@@ -1,10 +1,20 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './VideoCard.css';
 
 const VideoCard = ({ id, thumbnail, duration, title, views, likes, retention, date, badge, badgeType }) => {
+  const navigate = useNavigate();
+
+  const handleCardClick = (e) => {
+    // Prevent navigation if they clicked the analytics button explicitly, 
+    // although the whole card goes to the same place now.
+    if (id) {
+      navigate(`/dashboard/video/${id}`);
+    }
+  };
+
   return (
-    <article className="video-card">
+    <article className="video-card" onClick={handleCardClick} style={{ cursor: 'pointer' }}>
       <div className="video-card__main">
         <div className="video-card__thumbnail-wrapper">
           <img src={thumbnail} alt={title} className="video-card__thumbnail" />
@@ -21,7 +31,9 @@ const VideoCard = ({ id, thumbnail, duration, title, views, likes, retention, da
             <span className="video-card__date">{date}</span>
           </div>
           
-          <h3 className="video-card__title" title={title}>{title}</h3>
+          <h3 className="video-card__title" title={title}>
+            {title.length > 40 ? title.substring(0, 40) + '...' : title}
+          </h3>
           
           <div className="video-card__stats">
             <span className="video-card__stat-item">
@@ -44,9 +56,9 @@ const VideoCard = ({ id, thumbnail, duration, title, views, likes, retention, da
       
       {id && (
         <div className="video-card__actions">
-          <Link to={`/dashboard/video/${id}`} className="video-card__action-btn" title="Video Analytics">
+          <button className="video-card__action-btn" title="Video Analytics">
             <span className="material-symbols-outlined">analytics</span>
-          </Link>
+          </button>
         </div>
       )}
     </article>

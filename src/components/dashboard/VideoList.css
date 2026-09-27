@@ -98,4 +98,10 @@
     flex-direction: column;
     align-items: flex-start;
   }
+  
+  .video-list__content {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-sm);
+  }
 }

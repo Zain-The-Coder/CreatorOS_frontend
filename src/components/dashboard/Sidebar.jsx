@@ -4,8 +4,11 @@ import SidebarNavItem from './SidebarNavItem';
 import UserProfileSnippet from './UserProfileSnippet';
 import useAuth from '../../hooks/useAuth';
 
+import { useLocation } from 'react-router-dom';
+
 const Sidebar = () => {
   const { logout, user } = useAuth();
+  const location = useLocation();
 
   const handleLogout = async () => {
     await logout();
@@ -55,8 +58,18 @@ const Sidebar = () => {
             <div className="sidebar__nav-section">
               <span className="sidebar__nav-section-title">Broadcast Ops</span>
             </div>
-            <SidebarNavItem icon="grid_view" label="Dashboard" isActive={true} href="#" />
-            {/* Future items can be added here */}
+            <SidebarNavItem 
+              icon="grid_view" 
+              label="Dashboard" 
+              isActive={location.pathname === '/dashboard' || location.pathname === '/'} 
+              href="/dashboard" 
+            />
+            <SidebarNavItem 
+              icon="smart_toy" 
+              label="AI Insights" 
+              isActive={location.pathname === '/ai-insights'} 
+              href="/ai-insights" 
+            />
 
             <div className="sidebar__nav-section" style={{ marginTop: '16px' }}>
               <span className="sidebar__nav-section-title">Workspace</span>

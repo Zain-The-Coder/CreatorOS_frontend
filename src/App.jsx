@@ -5,6 +5,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import VideoAnalytics from './pages/VideoAnalytics';
 import ProtectedRoute from './components/auth/ProtectedRoute';
+import AIInsights from './pages/AIInsights';
 
 function App() {
   return (
@@ -17,6 +18,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/ai-insights" 
+          element={
+            <ProtectedRoute>
+              <AIInsights />
             </ProtectedRoute>
           } 
         />

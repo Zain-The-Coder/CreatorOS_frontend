@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './SidebarNavItem.css';
 
 const SidebarNavItem = ({ icon, label, isActive, href, onClick }) => {
@@ -10,10 +11,10 @@ const SidebarNavItem = ({ icon, label, isActive, href, onClick }) => {
   };
 
   return (
-    <a href={href || '#'} className={`nav-item ${isActive ? 'nav-item--active' : ''}`} onClick={handleClick}>
+    <Link to={href || '#'} className={`nav-item ${isActive ? 'nav-item--active' : ''}`} onClick={handleClick}>
       <span className="material-symbols-outlined nav-item__icon">{icon}</span>
       <span className="nav-item__label">{label}</span>
-    </a>
+    </Link>
   );
 };
 

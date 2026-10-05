@@ -20,6 +20,8 @@ const QuickQuestions = () => {
 
     try {
       const response = await sendAIChat(userMessage, user?._id);
+      console.log(response)
+      console.log(response.data)
       const reply = response.data?.answer || 'Could not get a response.';
       setMessages(prev => [...prev, { text: reply, sender: 'ai' }]);
     } catch (err) {

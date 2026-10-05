@@ -20,7 +20,7 @@ const Sidebar = () => {
       <div className="sidebar-mobile-header">
         <div className="sidebar__logo-container sidebar-mobile-header__logo">
           <img 
-            src="https://lh3.googleusercontent.com/aida/AEtjO1Xv7EkEd9O6EJSp1CpWez0OTsdsFEBQL6D3b3Eo7vwuniKnEEctA8S95zVsw0IkZuFv8uFHvg8EtEe7j6-viTGzG1eFQHAATlAP_IGspoQ5HYVoLMo1ga3c-gIcsxgUIdFNTw8Ee4pG5uI20Jy4rVzbeON-MOsMrq9N7o6VjqqQcjwuOYN-YpXLgUMmSyMjqLqXgP4qwZQ9pDvQ3lke7yCIlPueel9vAYBdsswGOMwGvVR7xpofhTTcO6o" 
+            src="/creatoros_logo.png" 
             alt="CreatorOS Logo" 
             className="sidebar__logo" 
           />
@@ -44,7 +44,7 @@ const Sidebar = () => {
         <div className="sidebar__top">
           <div className="sidebar__logo-container">
             <img 
-              src="https://lh3.googleusercontent.com/aida/AEtjO1Xv7EkEd9O6EJSp1CpWez0OTsdsFEBQL6D3b3Eo7vwuniKnEEctA8S95zVsw0IkZuFv8uFHvg8EtEe7j6-viTGzG1eFQHAATlAP_IGspoQ5HYVoLMo1ga3c-gIcsxgUIdFNTw8Ee4pG5uI20Jy4rVzbeON-MOsMrq9N7o6VjqqQcjwuOYN-YpXLgUMmSyMjqLqXgP4qwZQ9pDvQ3lke7yCIlPueel9vAYBdsswGOMwGvVR7xpofhTTcO6o" 
+              src="/creatoros_logo.png" 
               alt="CreatorOS Logo" 
               className="sidebar__logo" 
             />

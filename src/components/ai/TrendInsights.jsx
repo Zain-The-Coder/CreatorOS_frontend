@@ -1,17 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { getTrends } from '../../api/ai.api';
+import { AuthContext } from '../../context/AuthContext';
 import './AIWidgets.css';
 
 const TrendInsights = () => {
   const [insights, setInsights] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { user } = useContext(AuthContext);
 
   const fetchTrends = async () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await getTrends();
+      const response = await getTrends(user?._id);
       if (response.data?.success && response.data?.insights) {
         setInsights(response.data.insights);
       } else {

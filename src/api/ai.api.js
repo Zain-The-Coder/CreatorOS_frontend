@@ -6,16 +6,16 @@ const aiAxiosInstance = axios.create({
   withCredentials: true,
 });
 
-export const getAIVideoData = async () => {
-  return await axiosInstance.get('/api/ai/videos');
+export const getAIVideoData = async (creatorId) => {
+  return await aiAxiosInstance.get('/api/data', { params: { creatorId } });
 };
 
-export const getTrends = async () => {
-  return await axiosInstance.get('/api/ai/trends');
+export const getTrends = async (creatorId) => {
+  return await aiAxiosInstance.get('/api/trends', { params: { creatorId } });
 };
 
 export const suggestTopic = async (data) => {
-  return await axiosInstance.post('/api/ai/suggest-topic', data);
+  return await aiAxiosInstance.post('/api/suggest-topic', data);
 };
 
 export const sendAIChat = async (message, creatorId) => {

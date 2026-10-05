@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { suggestTopic } from '../../api/ai.api';
+import { AuthContext } from '../../context/AuthContext';
 import './AIWidgets.css';
 
 const steps = [
@@ -15,6 +16,7 @@ const SuggestTopicWizard = () => {
   const [suggestion, setSuggestion] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { user } = useContext(AuthContext);
 
   const handleNext = () => {
     if (currentStep < steps.length - 1) setCurrentStep(prev => prev + 1);
@@ -32,7 +34,8 @@ const SuggestTopicWizard = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await suggestTopic(formData);
+      const payload = { ...formData, creatorId: user?._id };
+      const response = await suggestTopic(payload);
       if (response.data?.success && response.data?.suggestion) {
         setSuggestion(response.data.suggestion);
       } else {

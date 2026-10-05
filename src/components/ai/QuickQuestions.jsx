@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { sendAIChat } from '../../api/ai.api';
+import { AuthContext } from '../../context/AuthContext';
 import './AIWidgets.css';
 
 const QuickQuestions = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const { user } = useContext(AuthContext);
 
   const handleSend = async (e) => {
     e.preventDefault();
@@ -17,7 +19,7 @@ const QuickQuestions = () => {
     setIsLoading(true);
 
     try {
-      const response = await sendAIChat(userMessage);
+      const response = await sendAIChat(userMessage, user?._id);
       const reply = response.data?.answer || 'Could not get a response.';
       setMessages(prev => [...prev, { text: reply, sender: 'ai' }]);
     } catch (err) {

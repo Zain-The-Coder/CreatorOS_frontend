@@ -190,7 +190,7 @@ const Dashboard = () => {
   const todayDate = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
 
   const handleConnect = () => {
-    window.location.href = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'}/auth/google/connect-youtube`;
+    window.location.href = `${import.meta.env.VITE_API_BASE_URL || 'https://creatoros-production-a42f.up.railway.app'}/auth/google/connect-youtube`.replace(/([^:]\/)\/+/g, "$1");
   };
 
   return (

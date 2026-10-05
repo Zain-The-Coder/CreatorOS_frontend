@@ -4,8 +4,8 @@ import './GoogleAuthButton.css';
 export default function GoogleAuthButton() {
   const handleGoogleLogin = () => {
     localStorage.setItem('isGoogleLogin', 'true');
-    const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
-    window.location.href = `${baseURL}/auth/google`;
+    const baseURL = import.meta.env.VITE_API_BASE_URL || 'https://creatoros-production-a42f.up.railway.app';
+    window.location.href = `${baseURL}/auth/google`.replace(/([^:]\/)\/+/g, "$1");
   };
 
   return (

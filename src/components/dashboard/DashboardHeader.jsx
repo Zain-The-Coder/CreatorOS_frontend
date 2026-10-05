@@ -43,10 +43,10 @@ const DashboardHeader = ({ name, date }) => {
               if (isGoogleLogin) {
                 alert('YouTube already connected');
               } else {
-                const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+                const baseURL = import.meta.env.VITE_API_BASE_URL || 'https://creatoros-production-a42f.up.railway.app';
                 // Pass the current user's email as a hint to the backend
                 const emailQuery = user?.email ? `?email_hint=${encodeURIComponent(user.email)}` : '';
-                window.location.href = `${baseURL}/auth/google/connect-youtube${emailQuery}`;
+                window.location.href = `${baseURL}/auth/google/connect-youtube${emailQuery}`.replace(/([^:]\/)\/+/g, "$1");
               }
             }}
           >
